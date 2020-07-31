@@ -40,7 +40,7 @@ export class Beanstram01CdkStack extends cdk.Stack {
     const buildOutput = new codepipeline.Artifact();
     const buildProject = new codebuild.PipelineProject(this, 'myBuildProject');
     const buildAction = new codepipelineActions.CodeBuildAction({
-      actionName: 'CodeBuild - Build',
+      actionName: 'CodeBuild-Build',
       project: buildProject,
       input: sourceOutput,
       outputs: [buildOutput],
