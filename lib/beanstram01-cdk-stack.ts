@@ -7,6 +7,8 @@ import * as ecr from '@aws-cdk/aws-ecr';
 import * as ecs from '@aws-cdk/aws-ecs';
 import * as ec2 from '@aws-cdk/aws-ec2';
 import * as elbv2 from '@aws-cdk/aws-elasticloadbalancingv2';
+import * as acm from '@aws-cdk/aws-certificatemanager';
+import * as r53 from '@aws-cdk/aws-route53';
 
 
 export class Beanstram01CdkStack extends cdk.Stack {
@@ -94,6 +96,7 @@ export class Beanstram01CdkStack extends cdk.Stack {
       internetFacing: true,
     });
 
+    // --- http / tcp/80 listener
     const webLbListener = webLb.addListener('beanStreamingHTTP',{
       port: 80,
       open: true,
@@ -103,9 +106,36 @@ export class Beanstram01CdkStack extends cdk.Stack {
       targets: [ webAppECSService],
       port: 80,
     });
+    
+    // --- http / tcp/443 listener
+    
+    // const route53Zone = r53.HostedZone.fromHostedZoneId(this, "BeanStreaming", "Z17GRY71NA2IQ8");
+    
+    // --- SSL cert ---
+    const cert = new acm.DnsValidatedCertificate(this, 'BeanStreamingECS', {
+      domainName: 'buttonmonkey.co.za',
+      //hostedZone: r53.HostedZone.fromHostedZoneId(this, "BeanStreaming", "Z17GRY71NA2IQ8"),
+      hostedZone: r53.HostedZone.fromLookup(this, 'HostedZone', { domainName: "buttonmonkey.co.za" }),
+    });
+    
+    //new ApplicationListenerCertificate
+    
+    const web443LbListener = webLb.addListener('beanStreamingHTTPS',{
+      port: 443,
+      open: true,
+      certificates: [ cert ] 
+    });
+
+    web443LbListener.addTargets('webLbWebAppTargets', {
+      targets: [ webAppECSService],
+      port: 80,
+    });
+
+    
+    // --- Add cert to LB ---
+    // --- dns --- 
 
     // --- database ---
-    // --- dns --- 
     // --- cdn ---
 
     // --- OUTPUTS ---

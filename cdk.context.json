@@ -1,0 +1,11 @@
+{
+  "availability-zones:account=365966445486:region=eu-west-1": [
+    "eu-west-1a",
+    "eu-west-1b",
+    "eu-west-1c"
+  ],
+  "hosted-zone:account=365966445486:domainName=buttonmonkey.co.za:region=eu-west-1": {
+    "Id": "/hostedzone/Z17GRY71NA2IQ8",
+    "Name": "buttonmonkey.co.za."
+  }
+}
